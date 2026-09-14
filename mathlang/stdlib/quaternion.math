@@ -1,0 +1,15 @@
+module std.quaternion
+
+algebra Quaternion over Real {
+    generators {i, j, k}
+    relations {
+        i^2 = -1, j^2 = -1, k^2 = -1,
+        i*j = k, j*k = i, k*i = j,
+        j*i = -k, k*j = -i, i*k = -j
+    }
+    basis {1, i, j, k}
+    multiplication bilinear
+    prove multiplication associative
+}
+
+quaternion(a, b, c, d) = a + b*Quaternion.i + c*Quaternion.j + d*Quaternion.k

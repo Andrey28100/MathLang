@@ -1,0 +1,52 @@
+module examples.theories
+import std.theories {Semigroup, Monoid, Group, Ring}
+import std.quaternion {Quaternion}
+
+// The same abstract multiplication can be implemented by real addition.
+implementation Addition implements Monoid<Real> {
+    operation (*) = (a:Real,b:Real)=>a+b
+    const identity = 0
+}
+Addition
+Addition.valid                          // True
+Addition.associative                    // proved, with a checked certificate
+Addition.multiply(2,3) |> simplify       // 5
+
+implementation AdditiveGroup implements Group<Real> {
+    operation (*) = (a:Real,b:Real)=>a+b
+    operation inverse = (a:Real)=>-a
+    const identity = 0
+}
+AdditiveGroup.valid                     // True
+
+// A failed axiom remains an explicit result with an exact counterexample.
+implementation Subtraction implements Semigroup<Real> {
+    operation (*) = (a:Real,b:Real)=>a-b
+}
+Subtraction.valid                       // False
+Subtraction.associative
+
+// Abstract symbols have signatures, but supply no proof of associativity.
+combine:Function<Real,Real,Real>
+implementation Unresolved implements Semigroup<Real> {
+    operation (*) = combine
+    assume associative
+}
+Unresolved                              // assumed axiom, unknown operation totality
+Unresolved.valid                        // Unknown; assumed is distinct from proved
+
+// Universal identities for quotient algebras use symbolic basis coordinates.
+implementation QuaternionRing implements Ring<Quaternion> {
+    operation (+) = (a:Quaternion,b:Quaternion)=>a+b
+    operation (*) = (a:Quaternion,b:Quaternion)=>a*b
+    operation (-) = (a:Quaternion)=>-a
+    const zero = 0
+    const one = 1
+}
+QuaternionRing.valid                    // True
+QuaternionRing.distributive
+
+P=forall x:Real: x^2 >= 0
+P                                      // True
+query(forall x:Real: x > 0)             // False, e.g. x=0
+query(forall x:Real: x/x = 1)           // Unknown: undefined at zero

@@ -1,0 +1,40 @@
+module examples.symbols_and_types
+
+parameter $alpha : Real
+variable $theta : Real
+
+function wave($x : Real) : Real {
+    const phase : Real = $alpha*$x
+    return sin(phase)
+}
+
+print(wave($theta))
+print(wave($theta) |> derivative($theta) |> simplify)
+print(wave($theta) |> substitute($alpha=2, $theta=0) |> simplify)
+
+algebra Dual over Real {
+    generators {$epsilon}
+    relations {$epsilon^2 = 0}
+    basis {1, ε}
+}
+
+with Dual {
+    print(normalize((1+$epsilon)^4))
+    prove (1+ε)^4 = 1+4*ε
+}
+
+function distance_squared(x : Real, y : Real) : Real {
+    const xx : Real = x*x
+    const yy : Real = y*y
+    return xx+yy
+}
+
+add = (x : Real, y : Real) => x+y
+print(normalize(distance_squared(3, 4)))
+print(normalize(add(2, 3)))
+
+// Shapes are checked even though the matrix entries remain symbolic.
+A : Matrix<Real, 3, 2>
+B : Matrix<Real, 2, 4>
+product = A*B
+print(product)

@@ -1,0 +1,4 @@
+module std.analysis.series
+
+const series = series
+const polynomial = polynomial

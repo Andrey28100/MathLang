@@ -1,0 +1,51 @@
+module examples.mandelbrot
+
+// A point is a function: p(0) is its real part, p(1) its imaginary part.
+// This uses existing first-class functions; no vector constructor is required.
+function point(a:Real, b:Real):Function<Nat,Real> {
+    return (axis:Nat)=>a+(b-a)*axis
+}
+
+// z -> z^2+c, written in real coordinates.
+function advance(z:Function<Nat,Real>, cr:Real, ci:Real):Function<Nat,Real> {
+    const x=z(0)
+    const y=z(1)
+    return point(x*x-y*y+cr, 2*x*y+ci)
+}
+
+function orbit(cr:Real, ci:Real, n:Nat):Function<Nat,Real> {
+    return iterate((z:Function<Nat,Real>)=>advance(z,cr,ci), point(0,0), n)
+}
+
+function norm_squared(z:Function<Nat,Real>):Real {
+    return sum((axis:Nat)=>z(axis)^2, 0, 1)
+}
+
+// Strict escape threshold: equality to radius 2 is NOT an escape.
+function bounded_through(cr:Real, ci:Real, steps:Nat):Predicate {
+    return all((k:Nat)=>norm_squared(orbit(cr,ci,k))<=4, 1, steps)
+}
+
+// These two analytic regions are subsets of the Mandelbrot set.
+function in_known_region(cr:Real, ci:Real):Predicate {
+    const q=(cr-1/4)^2+ci^2
+    return q*(q+cr-1/4)<=ci^2/4 or (cr+1)^2+ci^2<=1/16
+}
+
+// True: a sufficient analytic membership test succeeded.
+// False: an iterate escaped. Unknown: the finite test cannot decide.
+function mandelbrot(cr:Real, ci:Real, steps:Nat):Predicate {
+    return in_known_region(cr,ci) or (Unknown and bounded_through(cr,ci,steps))
+}
+
+mandelbrot(0, 0, 4)                     // True
+mandelbrot(-1, 0, 4)                    // True
+mandelbrot(1, 0, 4)                     // False (0 -> 1 -> 2 -> 5)
+mandelbrot(1, 1, 4)                     // False
+mandelbrot(-2, 0, 4)                    // Unknown: exactly |z|=2, no false escape
+mandelbrot(-3/4, 1/10, 3)               // Unknown: no escape in the first 3 steps
+
+// Product of squared orbit radii, another indexed iteration example.
+product((k:Nat)=>norm_squared(orbit(1,0,k)), 1, 3) // 100
+
+// Formulas and limitations: ../docs/ITERATION.md

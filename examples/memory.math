@@ -1,0 +1,20 @@
+// Declarations and expression definitions persist for this program/session.
+const c = 2
+parameter a : Real
+variable x : Real
+unknown y : Real
+
+f = c*x + a
+g = f^2
+print(f)
+print(g)
+
+// Rebinding f does not change g, which captured the previous expression.
+f = x + 1
+print(g)
+
+square(t) = t^2 + 1
+print(square(f))
+
+wave(x) = exp(a*x)*sin(x)
+print(wave(2))

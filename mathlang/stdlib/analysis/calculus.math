@@ -1,0 +1,6 @@
+module std.analysis.calculus
+
+const derivative = derivative
+const antiderivative = antiderivative
+const integrate = integrate
+const limit = limit

@@ -1,0 +1,12 @@
+module std.complex
+
+algebra Complex over Real {
+    generators {i}
+    relations {i^2 = -1}
+    basis {1, i}
+    multiplication bilinear
+    prove multiplication associative
+    prove multiplication commutative
+}
+
+complex(a, b) = a + b*Complex.i

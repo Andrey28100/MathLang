@@ -1,0 +1,12 @@
+module std.dual
+
+algebra Dual over Real {
+    generators {ε}
+    relations {ε^2 = 0}
+    basis {1, ε}
+    multiplication bilinear
+    prove multiplication associative
+    prove multiplication commutative
+}
+
+dual(a, b) = a + b*Dual.ε

@@ -1,0 +1,48 @@
+module examples.series_calculus
+x:Real
+
+S=series(exp(x), x=0, order=6)
+S
+derivative(S,x)                          // ... + O(x^5)
+antiderivative(S,x)                      // ... + O(x^7), value 0 at the center
+limit(S, x -> 0)                         // 1
+
+// The result keeps its Series<Real> type when passed through a function.
+function slope(s:Series<Real>):Series<Real> {
+    return derivative(s,x)
+}
+slope(S)
+
+antiderivative(x^2,x)                    // x^3/3, a primitive
+integrate(x^2,x,0,1)                     // 1/3, a definite integral
+integrate(x^2,x,1,0)                     // -1/3, reversed bounds
+integrate(sqrt(x),x,0,4)                 // 16/3
+
+// A finite Taylor series is not the exact original function.
+// Explicitly discard its remainder to integrate the approximating polynomial.
+integrate(polynomial(S),x,0,1)           // 1237/720
+
+// Factorial and a state/index block: these three results agree.
+factorial(6)
+iterate(1,6) {
+    (value:Nat, index:Nat) => value*index
+}
+product(1,6) {
+    (index:Nat) => index
+}
+
+// An explicit finite Taylor polynomial, using the new built-in factorial.
+1+sum(1,5) {
+    (index:Nat) => x^index/factorial(index)
+}
+
+// A symbolic indexed sum also supports termwise analysis.
+n:Nat
+P=sum(1,n) {(index:Nat)=>x^index/factorial(index)}
+dP=derivative(P,x)
+dP
+substitute(dP,n=3)                      // 1 + x + x^2/2
+primitiveP=antiderivative(P,x)
+substitute(primitiveP,n=2)               // x^2/2 + x^3/6
+areaP=integrate(P,x,0,1)
+substitute(areaP,n=2)                   // 2/3

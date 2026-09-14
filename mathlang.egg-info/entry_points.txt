@@ -1,0 +1,3 @@
+[console_scripts]
+mathlang = mathlang.__main__:main
+mathlang-ide = mathlang.ide.app:main

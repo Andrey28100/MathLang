@@ -1,0 +1,36 @@
+module examples.logic
+
+parameter x:Real
+predicate = x >= 0
+
+// Predicates remain symbolic; the displayed truth value uses the current context.
+predicate                       // Unknown
+x+x == 2*x                      // True: mathematical equality
+x+x === 2*x                     // False: different structures
+Unknown and False               // False
+Unknown or True                 // True
+
+function positive(t:Real):Predicate {
+    return t>0
+}
+positive(2)                     // True
+domain(1/x)                     // Unknown
+domain(sqrt(-1))                 // False over Real
+simplify(sqrt(x^2))              // sqrt(x^2)
+
+rule positive_root {sqrt(t^2) -> t when t>=0}
+assuming {
+    x > 0
+} {
+    predicate                   // True
+    domain(1/x)                 // True
+    simplify(sqrt(x^2))          // x
+    simplify(x/x)               // 1
+    rewrite(sqrt(x^2)) using positive_root
+    assuming {x>2} {x>1}         // True
+    x>2                         // Unknown
+}
+
+predicate                       // Unknown again
+domain(1/x)                     // Unknown again
+simplify(sqrt(x^2))              // sqrt(x^2)

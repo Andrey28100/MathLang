@@ -1,0 +1,37 @@
+parameter a : Real
+variable x : Real
+
+f(x) = exp(a*x) * sin(x)
+df = f
+    |> derivative(x)
+    |> simplify
+print(df)
+print(df(0) |> simplify) // 1
+
+taylor = f
+    |> series(x = 0, order = 6)
+print(taylor)
+
+// A calculus operator is a first-class object.
+D = derivative(x)
+square = x => x^2
+g = D(square)
+print(g(3) |> simplify) // 6
+
+print(sin(x) |> derivative(x) |> substitute(x = 0) |> simplify) // 1
+print(derivative(x^5, x, order = 3)) // 60*x^2
+print(antiderivative(3*x^2 + 2*x + 1, x)) // x^3 + x^2 + x
+print(antiderivative(exp(2*x), x)) // exp(2*x)/2
+
+print(limit(sin(x)/x, x -> 0)) // 1
+print(limit((x^2-1)/(x-1), x -> 1)) // 2
+print(limit((exp(x)-1-x)/x^2, x -> 0)) // 1/2
+
+print(exp(x)
+    |> series(x = 0, order = 6)
+    |> antiderivative(x)
+    |> simplify)
+
+// Explicit projection: the caller chooses to discard the asymptotic remainder.
+approximation = polynomial(taylor)
+print(approximation)

@@ -1,0 +1,20 @@
+module demo
+
+import geometry {Plane}
+import std.quaternion as q
+import std.analysis as analysis
+
+with Plane {
+    print(normalize(distance_squared(0, 0, 3, 4)))
+}
+
+with q.Quaternion {
+    print(normalize((i+j)^2))
+    prove i*j = -j*i
+}
+
+variable x : Real
+f(t) = exp(t)*sin(t)
+df = f |> analysis.derivative(x)
+print(df(0) |> simplify)
+print(analysis.series(f, x=0, order=5))

@@ -1,0 +1,40 @@
+algebra Complex over Real {
+    generators {i}
+    relations {i^2 = -1}
+    basis {1, i}
+    multiplication bilinear
+    prove multiplication associative
+    prove multiplication commutative
+}
+
+with Complex {
+    z = (1+i)^2
+    print(z)
+    print(z |> normalize)
+    prove (1+i)^4 = -4
+}
+
+// Relations are equations: either orientation defines the same quotient.
+algebra Dual over Real {
+    generators {ε}
+    relations {0 = ε^2}
+    multiplication bilinear
+    derive basis
+}
+
+parameter a : Real
+parameter b : Real
+with Dual {
+    print(normalize((a+b*ε)^3))
+	prove (a + b*ε)^3 = a^3 + 3*a^2*b*ε
+}
+
+// An infinite-dimensional example from section 85 of the specification.
+algebra Weyl over Rational {
+    generators {x, y}
+    relations {x*y - y*x = 1}
+}
+with Weyl {
+    print(normalize(y*x^3))
+    prove y*x^3 = x^3*y - 3*x^2
+}

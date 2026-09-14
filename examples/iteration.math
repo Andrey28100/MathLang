@@ -1,0 +1,36 @@
+module examples.iteration
+
+// Repeated application: x[0]=1, x[n+1]=2*x[n]+1.
+iterate(x=>2*x+1, 1, 4)                 // 31
+iterate(x=>x/2, 1, 3)                   // 1/8, exact arithmetic
+iterate(x=>x+1, 7, 0)                   // 7, zero steps
+
+// Inclusive integer bounds; the index is local to its lambda.
+sum((k:Integer)=>k^2, 1, 10)            // 385
+product((k:Integer)=>k, 1, 5)           // 120
+sum(k=>k, 3, 2)                         // 0, empty range
+product(k=>k, 3, 2)                     // 1, empty range
+all(k=>k>0, 1, 5)                       // True
+any(k=>k<0, -2, 2)                      // True
+
+// Expression form with a previously declared binder.
+index:Integer
+state:Real
+sum(index^2, index, -2, 2)               // 10
+product(index+1, index, 0, 3)            // 24
+iterate(state^2, state, 2, 3)            // 256
+index                                  // the original symbol is unchanged
+
+// Bounds can be function arguments; execution waits for the call.
+function factorial_from_product(n:Nat):Nat {
+    return product((k:Nat)=>k, 1, n)
+}
+factorial_from_product(6)               // 720
+factorial(6)                            // 720, built-in operation
+sum(k=>sum(j=>k*j, 1, 3), 1, 2)         // 18
+
+// Symbolic bounds remain stored and appear as a sum in the IDE preview.
+n:Nat
+S=sum(k=>k^2, 1, n)
+S
+substitute(S, n=10)                     // 385

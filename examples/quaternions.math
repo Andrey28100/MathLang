@@ -1,0 +1,31 @@
+// The multiplication table is ordinary language data, not a built-in type.
+algebra H over Real {
+    generators {i, j, k}
+    relations {
+        i^2 = -1,
+        j^2 = -1,
+        k^2 = -1,
+        i*j = k,
+        j*k = i,
+        k*i = j,
+        j*i = -k,
+        k*j = -i,
+        i*k = -j
+    }
+    basis {1, i, j, k}
+    multiplication bilinear
+    prove multiplication associative
+}
+
+with H {
+    q = 1 + 2*i + 3*j + 4*k
+    print(q*q)
+    print(normalize(q*q))
+    prove {
+        (i+j)^2 = -2
+        i*j = -j*i
+    }
+    prove multiplication commutative
+}
+
+print(normalize(H.i*H.j))

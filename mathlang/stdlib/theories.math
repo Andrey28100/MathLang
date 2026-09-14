@@ -1,0 +1,74 @@
+module std.theories
+
+// These contracts contain no implementation-specific kernel operations.
+theory Semigroup<T> {
+    operation (*) : T x T -> T
+    axiom associative {
+        forall a,b,c:T: (a*b)*c = a*(b*c)
+    }
+}
+
+theory Monoid<T> extends Semigroup<T> {
+    const identity:T
+    axiom identity_rule {
+        forall a:T: a*identity = a and identity*a = a
+    }
+}
+
+theory Group<T> extends Monoid<T> {
+    operation inverse : T -> T
+    axiom inverse_rule {
+        forall a:T: a*inverse(a) = identity and inverse(a)*a = identity
+    }
+}
+
+theory CommutativeSemigroup<T> extends Semigroup<T> {
+    axiom commutative { forall a,b:T: a*b = b*a }
+}
+
+// Both branches inherit Semigroup. Shared requirements occur only once.
+theory CommutativeMonoid<T> extends Monoid<T>, CommutativeSemigroup<T> {}
+
+theory AbelianGroup<T> extends Group<T>, CommutativeMonoid<T> {}
+
+theory Ring<T> {
+    operation (+) : T x T -> T
+    operation (*) : T x T -> T
+    operation (-) : T -> T
+    const zero:T
+    const one:T
+    axiom add_associative {
+        forall a,b,c:T: (a+b)+c = a+(b+c)
+    }
+    axiom add_commutative {
+        forall a,b:T: a+b = b+a
+    }
+    axiom additive_identity {
+        forall a:T: a+zero = a and zero+a = a
+    }
+    axiom additive_inverse {
+        forall a:T: a+(-a) = zero and (-a)+a = zero
+    }
+    axiom mul_associative {
+        forall a,b,c:T: (a*b)*c = a*(b*c)
+    }
+    axiom multiplicative_identity {
+        forall a:T: a*one = a and one*a = a
+    }
+    axiom distributive {
+        forall a,b,c:T: a*(b+c) = a*b+a*c and (a+b)*c = a*c+b*c
+    }
+}
+
+// A field's inverse is unconstrained at zero. Conditional inverse laws are
+// preserved as obligations; the current polynomial checker may leave them unknown.
+theory Field<T> extends Ring<T> {
+    operation inverse : T -> T
+    axiom mul_commutative {
+        forall a,b:T: a*b = b*a
+    }
+    axiom inverse_rule {
+        forall a:T: a = zero or a*inverse(a) = one
+    }
+    axiom nontrivial { zero != one }
+}

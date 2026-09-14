@@ -1,0 +1,26 @@
+module examples.ide_types
+
+// Select an expression below and press Ctrl+Alt+T in the IDE.
+// Ctrl+Space completes names from preceding definitions.
+parameter $alpha:Real
+variable x:Real
+parameter c:Complex
+
+function square(t:Real):Real {
+    const product=t*t
+    return product
+}
+generic_square(t)=t*t
+function apply(f:Function<Real,Real>,t:Real):Real {
+    return f(t)
+}
+
+A:Matrix<Rational,3,2>
+B:Matrix<Real,2,4>
+
+print(-2+3, (1/2)*2)
+square(2)
+apply(generic_square,x)
+$alpha+x
+sin(c)
+A*B

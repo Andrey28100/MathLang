@@ -1,0 +1,13 @@
+module std.core
+
+const normalize = normalize
+const simplify = simplify
+const substitute = substitute
+const rewrite = rewrite
+const numeric = numeric
+
+identity(x) = x
+square(x) = x*x
+cube(x) = x*x*x
+commutator(a, b) = a*b - b*a
+anticommutator(a, b) = a*b + b*a

@@ -1,0 +1,51 @@
+module examples.theory_inheritance
+
+import std.theories {Semigroup, Monoid, AbelianGroup}
+import std.quaternion {Quaternion}
+
+theory Commutative<T> extends Semigroup<T> {
+    axiom commutative { forall a,b:T: a*b = b*a }
+}
+
+// Semigroup is inherited along two paths. Its operation and axiom occur once.
+theory CommutativeMonoid<T> extends Monoid<T>, Commutative<T> {}
+CommutativeMonoid
+
+implementation Addition implements CommutativeMonoid<Real> {
+    operation (*) = (a:Real,b:Real) => a+b
+    const identity = 0
+}
+Addition.valid                  // True: all inherited requirements are proved.
+Addition.associative
+Addition.commutative
+Addition.multiply(2,3) |> simplify
+
+// The standard library also composes Group and CommutativeMonoid.
+implementation AdditiveGroup implements AbelianGroup<Real> {
+    operation (*) = (a:Real,b:Real) => a+b
+    operation inverse = (a:Real) => -a
+    const identity = 0
+}
+AdditiveGroup.valid             // True
+
+implementation QuaternionProduct implements CommutativeMonoid<Quaternion> {
+    operation (*) = (a:Quaternion,b:Quaternion) => a*b
+    const identity = 1
+}
+QuaternionProduct.valid        // False: associativity and identity hold, commutativity fails.
+QuaternionProduct.associative
+QuaternionProduct.commutative  // An exact counterexample uses quaternion basis elements.
+
+theory Action<T,K> {
+    operation act : T x K -> T
+    const identity:K
+    axiom unit { forall a:T: act(a,identity) = a }
+}
+
+// A parent parameter can be fixed while the other remains generic.
+theory NaturalAction<T> extends Action<T,Nat> {}
+implementation Scale implements NaturalAction<Real> {
+    operation act = (x:Real,k:Nat) => x*k
+    const identity = 1
+}
+Scale.valid                    // True

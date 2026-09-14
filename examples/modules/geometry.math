@@ -1,0 +1,6 @@
+module geometry
+
+namespace Plane {
+    squared_norm(x, y) = x^2 + y^2
+    distance_squared(x0, y0, x1, y1) = squared_norm(x1-x0, y1-y0)
+}

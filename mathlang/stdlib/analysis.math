@@ -1,0 +1,12 @@
+module std.analysis
+
+import std.analysis.calculus {derivative, antiderivative, integrate, limit}
+import std.analysis.series {series, polynomial}
+
+const sin = sin
+const cos = cos
+const tan = tan
+const exp = exp
+const log = log
+const sqrt = sqrt
+const abs = abs
